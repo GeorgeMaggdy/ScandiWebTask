@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 24px;
+    color: #333;
+}
+
+.button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+}
+
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-table th, .product-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.product-table th {
+    background-color: #007BFF;
+    color: white;
+    font-weight: bold;
+}
+
+.product-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.delete-checkbox {
+    transform: scale(1.2);
+}
+
+tbody tr td {
+    color: #555;
+}
+
+#massDeleteButton {
+    background-color: #dc3545;
+}
+
+#massDeleteButton:hover {
+    background-color: #c82333;
+}
