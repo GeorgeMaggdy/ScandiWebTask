@@ -9,6 +9,7 @@ class DVD extends Product
     {
         parent::__construct($sku, $name, $price, 'DVD');
         $this->size = $attributes['size'] ?? null;
+        $this->type = 'DVD';
     }
 
     // Return the specific query for this product type

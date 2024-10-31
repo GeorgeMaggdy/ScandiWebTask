@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Product List</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 
 <body>
@@ -14,8 +14,8 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h1>Product List</h1>
             <div>
-                <a href="add-product.php" class="btn btn-primary me-2">ADD</a>
-                <button class="btn btn-danger" id="delete-product-btn" disabled>MASS DELETE</button>
+                <a href="add_product" class="btn btn-primary me-2">ADD</a>
+                <button class="btn btn-danger" id="delete-product-btn">MASS DELETE</button>
             </div>
         </div>
 
@@ -34,8 +34,8 @@
                             <div class="card-body d-flex flex-column">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input delete-checkbox"
-                                        data-id="<?php echo $product['id']; ?>" id="checkbox-<?php echo $product['id']; ?>">
-                                    <label class="form-check-label" for="checkbox-<?php echo $product['id']; ?>">Select</label>
+                                        data-id="<?php echo $product['id']; ?>" id=<?php echo $product['id']; ?>>
+                                    <label class="form-check-label" for=<?php echo $product['id']; ?>>Select</label>
                                 </div>
                                 <h5 class="card-title mt-3"><?php echo $product['sku']; ?></h5>
                                 <p class="card-text"><?php echo $product['name']; ?></p>
@@ -61,6 +61,37 @@
             <?php endif; ?>
         </div>
     </div>
+
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#delete-product-btn').on('click', function () {
+                let selectedIds = [];
+                $('.delete-checkbox:checked').each(function () {
+                    selectedIds.push($(this).data('id'));
+                });
+
+                if (selectedIds.length > 0) {
+                    fetch('/scandiwebtask/public/delete_product', { // Adjust to match your public URL structure
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ids: selectedIds })
+                    }).then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                window.location.reload(); // Refresh page after delete
+                            } else {
+                                alert(data.message); // Display error message
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                }
+            });
+        });
+
+    </script>
 </body>
 
 </html>

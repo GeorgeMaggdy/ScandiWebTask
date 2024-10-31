@@ -13,6 +13,8 @@ class Furniture extends Product
         $this->height = $attributes['height'] ?? null;
         $this->width = $attributes['width'] ?? null;
         $this->length = $attributes['length'] ?? null;
+        $this->type = 'Furniture';
+
     }
 
     public function getInsertQuery()

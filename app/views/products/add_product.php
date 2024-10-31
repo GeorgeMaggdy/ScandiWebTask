@@ -27,7 +27,7 @@
             </div>
         <?php endif; ?>
 
-        <form action="/scandiwebtask/public/add_product" method="POST" id="product_form">
+        <form action="" method="POST" id="product_form">
 
             <!-- SKU Field -->
             <div class="mb-3">

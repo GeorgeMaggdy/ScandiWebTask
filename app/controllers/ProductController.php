@@ -8,8 +8,6 @@ require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../validators/ProductValidator.php';
 
 
-
-
 class ProductController
 {
     private $productClasses = [
@@ -40,15 +38,15 @@ class ProductController
             if (empty($errors)) {
                 // Save product logic
                 $this->saveProduct();
-                
+
                 // Redirect or set a success message
                 $_SESSION['success'] = "Product added successfully!";
-                header("Location: products_list.php");
+                header("Location: products_list");
                 exit();
             } else {
                 $_SESSION['errors'] = $errors; // Store errors in session
             }
-        
+
         }
         require_once __DIR__ . '/../views/products/add_product.php'; // Load the add product view
     }
@@ -76,8 +74,7 @@ class ProductController
             $price,
             $_POST // Pass all POST data to handle attributes
         );
-        var_dump($product);
-        exit();
+
         // Save the product to the database
         $this->saveToDatabase($product);
     }
@@ -97,4 +94,50 @@ class ProductController
         $stmt->execute();
         $stmt->close();
     }
+//     public function delete_products()
+//     {
+
+// echo "1";
+//         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//             $data = json_decode(file_get_contents('php://input'), true);
+//             $ids = implode(',', array_map('intval', $data['ids']));
+
+//             $db = new Database();
+//             $connection = $db->getConnection();
+//             $connection->query("DELETE FROM products WHERE id IN ($ids)");
+//         }
+
+//     }
+// }
+
+public function delete_products()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $data = json_decode(file_get_contents('php://input'), true);
+        
+        // Ensure 'ids' is provided and is an array
+        if (isset($data['ids']) && is_array($data['ids'])) {
+            $ids = implode(',', array_map('intval', $data['ids']));
+
+            $db = new Database();
+            $connection = $db->getConnection();
+
+            // Execute the delete query
+            if ($connection->query("DELETE FROM products WHERE id IN ($ids)")) {
+                // Return JSON response on success
+                echo json_encode(['status' => 'success', 'message' => 'Products deleted successfully']);
+            } else {
+                // Return JSON response on failure
+                echo json_encode(['status' => 'error', 'message' => 'Failed to delete products']);
+            }
+        } else {
+            // Return JSON response if 'ids' is not provided or not an array
+            echo json_encode(['status' => 'error', 'message' => 'Invalid product IDs']);
+        }
+    } else {
+        // Return JSON response if the request method is not POST
+        echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
+    }
+    exit(); // Stop further script execution
+}
 }

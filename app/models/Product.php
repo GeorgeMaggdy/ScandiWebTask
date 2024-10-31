@@ -4,11 +4,13 @@ class Product {
     protected $sku;
     protected $name;
     protected $price;
+    protected $type;  // New type property
 
     public function __construct($sku, $name, $price) {
         $this->sku = $sku;
         $this->name = $name;
         $this->price = $price;
+        $this->type = '';  // Initialize type as an empty string by default
     }
 
     public function getSku() {
@@ -21,6 +23,10 @@ class Product {
 
     public function getPrice() {
         return $this->price;
+    }
+
+    public function getType() {
+        return $this->type;  // New getter for type
     }
 
     public function getTypeSpecificAttribute() {

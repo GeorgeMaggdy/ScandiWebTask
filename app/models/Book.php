@@ -9,6 +9,8 @@ class Book extends Product
     {
         parent::__construct($sku, $name, $price, 'Book');
         $this->weight = $attributes['weight'] ?? null;
+        $this->type = 'Book';
+
     }
 
     public function getInsertQuery()

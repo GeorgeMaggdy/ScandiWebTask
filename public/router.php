@@ -3,29 +3,22 @@
 $requestUri = $_SERVER['REQUEST_URI'];
 $requestUri = str_replace('/scandiwebtask/public', '', parse_url($requestUri, PHP_URL_PATH));
 
-// Route definitions
-if ($requestUri === '/productlist') {
+// Debugging: output the parsed request URI
+  // Stop execution to inspect the output
 
-    // Route for product list page
+// Route definitions
+if ($requestUri === '/products_list') {
     include '../app/controllers/ProductController.php';
     $controller = new ProductController();
     $controller->showProductList();
 } elseif ($requestUri === '/add_product') {
-    // Route for add product page
     include '../app/controllers/ProductController.php';
     $controller = new ProductController();
     $controller->add();
-
-
-}
-else if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requestUri === '/add_product') {
-    include 'controllers/ProductController.php';
-    $productController = new ProductController();
-    $productController->add();
-}
-
-
+} elseif ($requestUri === '/delete_product') {
+    include '../app/controllers/ProductController.php';
+    $controller = new ProductController();
+    $controller->delete_products(); }
 else {
-    // If no routes match, show 404 error
-    include '../views/error404.php';
+    echo "no view";
 }
