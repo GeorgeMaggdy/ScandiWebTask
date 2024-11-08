@@ -1,9 +1,14 @@
 <?php
 
-class Database {
-    private $connection;
+namespace App\Config;
 
-    public function __construct() {
+class database
+{
+    private \mysqli $connection;
+    private static ?Database $instance = null;
+
+    public function __construct()
+    {
         // Load .env file
         $this->loadEnv(__DIR__ . '/../../.env');  // Move up two directories to reach the root
 
@@ -14,7 +19,7 @@ class Database {
         $pass = $_ENV['DB_PASS'];
 
         // Establish connection
-        $this->connection = new mysqli($host, $user, $pass, $dbName);
+        $this->connection = new \mysqli($host, $user, $pass, $dbName);
 
         // Check connection
         if ($this->connection->connect_error) {
@@ -22,13 +27,19 @@ class Database {
         }
     }
 
-    public function getConnection() {
-        return $this->connection;
+    public static function getConnection(): \mysqli
+    {
+        if (!self::$instance) {
+            self::$instance = new Database();
+        }
+
+        return self::$instance->connection;
     }
 
-    private function loadEnv($path) {
+    private function loadEnv($path)
+    {
         if (!file_exists($path)) {
-            throw new Exception(".env file not found!");
+            throw new \Exception(".env file not found!");
         }
 
         $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);

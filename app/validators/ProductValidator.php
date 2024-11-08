@@ -1,7 +1,17 @@
 <?php
+namespace App\Validators;
+ use app\config\Database;
 
 class ProductValidator
 {
+    protected $db;
+
+    // Pass the database connection to the constructor
+    public function __construct($dbConnection)
+    {
+        $this->db = $dbConnection;
+    }
+
     public function validate($data)
     {
         $errors = [];
@@ -13,7 +23,10 @@ class ProductValidator
         // General validations
         if (empty($sku)) {
             $errors[] = "SKU is required.";
+        } elseif ($this->isSkuExists($sku)) {
+            $errors[] = "SKU must be unique.";
         }
+
         if (empty($name)) {
             $errors[] = "Name is required.";
         }
@@ -38,5 +51,16 @@ class ProductValidator
         }
 
         return $errors;
+    }
+
+    private function isSkuExists($sku)
+    {
+        $query = $this->db->prepare("SELECT COUNT(*) FROM products WHERE sku = ?");
+        $query->bind_param('s', $sku);
+        $query->execute();
+        $result = $query->get_result();
+        $count = $result->fetch_row()[0];
+
+        return $count > 0;
     }
 }

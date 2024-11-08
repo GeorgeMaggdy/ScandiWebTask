@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Test results and reports
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Environment files
+.env
+
+# Log files
+*.log
+
+# OS-specific files
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Editor/IDE config files
+# VSCode
+.vscode/
+
+# JetBrains IDEs
+.idea/

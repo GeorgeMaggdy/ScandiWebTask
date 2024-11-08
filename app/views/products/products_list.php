@@ -34,26 +34,23 @@
                             <div class="card-body d-flex flex-column">
                                 <div class="form-check">
                                     <input type="checkbox" class="form-check-input delete-checkbox"
-                                        data-id="<?php echo $product['id']; ?>" id=<?php echo $product['id']; ?>>
-                                    <label class="form-check-label" for=<?php echo $product['id']; ?>>Select</label>
+                                        data-id="<?php echo $product['sku']; ?>" id="<?php echo $product['sku']; ?>">
+                                    <label class="form-check-label" for="<?php echo $product['sku']; ?>">Select</label>
                                 </div>
-                                <h5 class="card-title mt-3"><?php echo $product['sku']; ?></h5>
-                                <p class="card-text"><?php echo $product['name']; ?></p>
+                                <h5 class="card-title mt-3"><?php echo htmlspecialchars($product['sku']); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars($product['name']); ?></p>
                                 <p class="card-text"><?php echo number_format($product['price'], 2); ?> $</p>
                                 <p class="card-text">
                                     <?php
-                                    if ($product['type'] == 'DVD' && isset($product['size_mb'])) {
-                                        echo 'Size: ' . $product['size_mb'] . ' MB';
-                                    } elseif ($product['type'] == 'Furniture' && isset($product['height_cm'], $product['width_cm'], $product['length_cm'])) {
-                                        echo 'Dimensions: ' . $product['height_cm'] . ' x ' . $product['width_cm'] . ' x ' . $product['length_cm'] . ' cm';
-                                    } elseif ($product['type'] == 'Book' && isset($product['weight_kg'])) {
-                                        echo 'Weight: ' . $product['weight_kg'] . ' KG';
+                                    if (isset($product['size'])) {
+                                        echo 'Size: ' . htmlspecialchars($product['size']) . ' MB';
+                                    } elseif (isset($product['weight'])) {
+                                        echo 'Weight: ' . htmlspecialchars($product['weight']) . ' KG';
                                     } else {
-                                        echo 'N/A';
+                                        echo 'Dimensions: ' . htmlspecialchars($product['height']) . ' x ' . htmlspecialchars($product['width']) . ' x ' . htmlspecialchars($product['length']) . ' cm';
                                     }
                                     ?>
                                 </p>
-
                             </div>
                         </div>
                     </div>
@@ -62,34 +59,40 @@
         </div>
     </div>
 
-
-
     <script>
+   $(document).ready(function () {
+    $('#delete-product-btn').on('click', function () {
+        let selectedIds = [];
+        let type = '';
 
-        $(document).ready(function () {
-            $('#delete-product-btn').on('click', function () {
-                let selectedIds = [];
-                $('.delete-checkbox:checked').each(function () {
-                    selectedIds.push($(this).data('id'));
-                });
-
-                if (selectedIds.length > 0) {
-                    fetch('/scandiwebtask/public/delete_product', { // Adjust to match your public URL structure
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ ids: selectedIds })
-                    }).then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                window.location.reload(); // Refresh page after delete
-                            } else {
-                                alert(data.message); // Display error message
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
-                }
-            });
+        $('.delete-checkbox:checked').each(function () {
+            selectedIds.push($(this).data('id'));
+            type = $(this).data('type');
         });
+
+        console.log('Selected IDs:', selectedIds);  // Debugging
+        console.log('Product Type:', type);  // Debugging
+
+        if (selectedIds.length > 0 && type) {
+            fetch('/scandiwebtask/public/delete_products', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: type, ids: selectedIds })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.reload(); // Refresh page after delete
+                    } else {
+                        alert(data.message); // Display error message
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            alert('No products selected or product type not specified');
+        }
+    });
+});
+
 
     </script>
 </body>

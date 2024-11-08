@@ -1,25 +1,39 @@
 <?php
-require_once 'Product.php';
 
-class Book extends Product
+namespace App\Models;
+
+use App\Helpers\ProductType;
+use App\Models\ProductTrait;
+
+class Book extends AbstractProduct
 {
-    private $weight;
+    use ProductTrait;
 
-    public function __construct($sku, $name, $price, $attributes)
+    private float $weight;
+
+    public function __construct(string $sku, string $name, float $price, float $weight)
     {
-        parent::__construct($sku, $name, $price, 'Book');
-        $this->weight = $attributes['weight'] ?? null;
-        $this->type = 'Book';
-
+        parent::__construct($sku, $name, $price, ProductType::BOOK);
+        $this->weight = $weight;
     }
 
-    public function getInsertQuery()
+    public function getData(): array
     {
-        return "INSERT INTO products (sku, name, price, type, weight_kg) VALUES (?, ?, ?, ?, ?)";
+        return [
+            'sku' => $this->sku,
+            'name' => $this->name,
+            'price' => $this->price,
+            'weight' => $this->weight,
+        ];
     }
 
-    public function bindParams($stmt)
+    public static function getAll(): array | null
     {
-        $stmt->bind_param("ssdsi", $this->sku, $this->name, $this->price, $this->type, $this->weight);
+        try {
+            return self::findAll('books'); // Correct table name
+        } catch (\Exception $e) {
+            self::throwDbError($e);
+            return null;
+        }
     }
 }

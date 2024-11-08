@@ -1,26 +1,37 @@
 <?php
-require_once 'Product.php';
 
-class DVD extends Product
+namespace App\Models;
+
+use App\Helpers\ProductType;
+use App\Models\ProductTrait;
+
+class DVD extends AbstractProduct
 {
-    private $size;
+    use ProductTrait;
 
-    public function __construct($sku, $name, $price, $attributes)
+    public function __construct($sku, $name, $price, protected float $size)
     {
-        parent::__construct($sku, $name, $price, 'DVD');
-        $this->size = $attributes['size'] ?? null;
-        $this->type = 'DVD';
+        parent::__construct($sku, $name, $price, ProductType::DVD);
     }
 
-    // Return the specific query for this product type
-    public function getInsertQuery()
+    public function getData(): array
     {
-        return "INSERT INTO products (sku, name, price, type, size_mb) VALUES (?, ?, ?, ?, ?)";
+        return [
+            'sku' => $this->sku,
+            'name' => $this->name,
+            'price' => $this->price,
+            'size' => $this->size,
+        ];
     }
 
-    // Bind specific parameters for this product type
-    public function bindParams($stmt)
+    public static function getAll(): array | null
     {
-        $stmt->bind_param("ssdsi", $this->sku, $this->name, $this->price, $this->type, $this->size);
+        try {
+            return self::findAll('dvds'); // Ensure the correct table name
+        } catch (\Exception $e) {
+            self::throwDbError($e);
+            return null;
+        }
     }
+    
 }
